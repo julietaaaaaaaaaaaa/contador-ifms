@@ -2,60 +2,83 @@
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  const dataFormatura = new Date("2025-12-15T00:00:00"); // NOVA DATA
-  const [tempo, setTempo] = useState({ dias: 0, horas: 0, minutos: 0, segundos: 0 });
-  const [finalizado, setFinalizado] = useState(false);
+  const dataFormatura = new Date("2025-12-15T00:00:00");
+
+  const [tempoRestante, setTempoRestante] = useState({
+    dias: 0,
+    horas: 0,
+    minutos: 0,
+    segundos: 0,
+  });
 
   useEffect(() => {
     const intervalo = setInterval(() => {
-      const agora = Date.now();
+      const agora = new Date();
       const diferenca = dataFormatura - agora;
 
-      if (diferenca <= 0) {
-        clearInterval(intervalo);
-        setFinalizado(true);
-        return;
+      if (diferenca > 0) {
+        const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
+        const horas = Math.floor(
+          (diferenca % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutos = Math.floor(
+          (diferenca % (1000 * 60 * 60)) / (1000 * 60)
+        );
+        const segundos = Math.floor((diferenca % (1000 * 60)) / 1000);
+
+        setTempoRestante({ dias, horas, minutos, segundos });
       }
-
-      const dias = Math.floor(diferenca / (1000 * 60 * 60 * 24));
-      const horas = Math.floor((diferenca / (1000 * 60 * 60)) % 24);
-      const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-      const segundos = Math.floor((diferenca / 1000) % 60);
-
-      setTempo({ dias, horas, minutos, segundos });
     }, 1000);
 
     return () => clearInterval(intervalo);
   }, []);
 
+  // ===== CARROSSEL DE FUNDO =====
+  const imagens = ["/foematura1.jpg", "/formatura2.jpg", "/amifos.jpg"];
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const trocar = setInterval(() => {
+      setIndex((prev) => (prev + 1) % imagens.length);
+    }, 5000); // troca a cada 5 segundos
+
+    return () => clearInterval(trocar);
+  }, []);
+
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen p-10 text-center gap-10">
-      <h1 className="text-4xl font-bold">
-        Contagem Regressiva - Julia Lene 6A Informática 🎓
-      </h1>
+    <main
+      className="h-screen w-screen flex flex-col items-center justify-center text-white relative overflow-hidden"
+      style={{
+        backgroundImage: `url(${imagens[index]})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        transition: "background-image 1s ease-in-out",
+      }}
+    >
+      {/* Máscara escura para leitura */}
+      <div className="absolute inset-0 bg-black bg-opacity-60"></div>
 
-      {!finalizado ? (
-        <h2 className="text-2xl">
-          Faltam <span className="font-bold">{tempo.dias}</span> dias,{" "}
-          <span className="font-bold">{tempo.horas}</span> horas,{" "}
-          <span className="font-bold">{tempo.minutos}</span> minutos e{" "}
-          <span className="font-bold">{tempo.segundos}</span> segundos para a nossa formatura!
+      {/* Conteúdo principal */}
+      <div className="relative z-10 text-center px-6">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-green-400 mb-4 drop-shadow-lg">
+          Contagem Regressiva - Julia Lene 6A Informática 🎓
+        </h1>
+
+        <h2 className="text-lg md:text-2xl mb-8">
+          Faltam{" "}
+          <span className="font-bold">{tempoRestante.dias}</span> dias,{" "}
+          <span className="font-bold">{tempoRestante.horas}</span> horas,{" "}
+          <span className="font-bold">{tempoRestante.minutos}</span> minutos e{" "}
+          <span className="font-bold">{tempoRestante.segundos}</span> segundos
+          para a nossa formatura!
         </h2>
-      ) : (
-        <h2 className="text-3xl text-green-600 font-bold animate-bounce">
-          🎉 Parabéns! Chegou o grande dia da nossa formatura! 🎓
-        </h2>
-      )}
 
-      <p className="text-lg max-w-xl">
-        Após a formatura quero cursar história na UFMS e um dia me tornar uma excelente professora!
-      </p>
-
-      {/* Galeria de imagens */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <img src="/formatura1.jpg" className="rounded-lg shadow-lg max-w-xs" alt="Foto 1" />
-        <img src="/formatura2.jpg" className="rounded-lg shadow-lg max-w-xs" alt="Foto 2" />
-        <img src="/amigos.jpg" className="rounded-lg shadow-lg max-w-xs" alt="Foto com amigos" />
+        <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed drop-shadow-md">
+          Após a formatura quero cursar{" "}
+          <span className="font-semibold text-green-300">História</span> na{" "}
+          <span className="font-semibold text-green-400">UFMS</span> e um dia me
+          tornar uma <span className="font-semibold text-green-300">excelente professora!</span>
+        </p>
       </div>
     </main>
   );
