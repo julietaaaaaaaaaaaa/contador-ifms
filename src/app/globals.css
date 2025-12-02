@@ -1,26 +1,89 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #ffffff;
+  --purple: #512DA8;
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: black;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.background-slideshow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.background-slideshow img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation: slideshow 18s infinite;
+}
+
+.background-slideshow img:nth-child(1) {
+  animation-delay: 0s;
+}
+.background-slideshow img:nth-child(2) {
+  animation-delay: 6s;
+}
+.background-slideshow img:nth-child(3) {
+  animation-delay: 12s;
+}
+
+@keyframes slideshow {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  30% { opacity: 1; }
+  40% { opacity: 0; }
+  100% { opacity: 0; }
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--purple);
+  text-shadow: 0px 0px 8px rgba(0,0,0,0.7);
+}
+
+.counter-text {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  color: var(--foreground);
+}
+
+.future-text {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: var(--foreground);
+}
+
+.future-text span {
+  color: var(--purple);
+  font-weight: bold;
+}
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55); /* ajuste aqui a escuridão */
+  z-index: -1;
 }
